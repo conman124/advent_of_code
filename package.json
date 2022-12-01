@@ -1,0 +1,16 @@
+{
+  "name": "aoc_2022",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@datastructures-js/heap": "^4.3.3",
+    "@datastructures-js/priority-queue": "^6.1.4",
+    "underscore": "^1.13.6"
+  }
+}
