@@ -19,9 +19,6 @@ function solve2() {
     .reduce((a,b)=>a+b);
 }
 
-console.log(solve1());
-console.log(solve2());
-
 var input = `15931
 8782
 16940
@@ -2297,3 +2294,6 @@ var input = `15931
 4895
 3947
 1567`;
+
+console.log(solve1());
+console.log(solve2());

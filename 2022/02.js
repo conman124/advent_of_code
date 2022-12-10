@@ -57,9 +57,6 @@ function solve2() {
   }).reduce((a,b) => a+b)
 };
 
-console.log(solve1());
-console.log(solve2());
-
 const input = `C Y
 C Z
 B Z
@@ -2560,3 +2557,6 @@ C Z
 A X
 A Y
 B Z`;
+
+console.log(solve1());
+console.log(solve2());
