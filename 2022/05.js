@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const sum = require('./sum');
 
 function rearrangeCrates(callback) {
     const [initial, instructions] = input.split('\n\n');
@@ -33,7 +34,7 @@ function rearrangeCrates(callback) {
         callback(count, fromStack, toStack, stacks);
     });
 
-    return stacks.map(_.last).reduce((a,b)=>a+b);
+    return stacks.map(_.last).reduce(sum);
 
 }
 

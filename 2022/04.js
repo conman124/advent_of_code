@@ -1,9 +1,11 @@
+const sum = require("./sum");
+
 function countOverlap(callback) {
     return input.split('\n')
         .map(a=>a.split(/[-,]/))
         .map(a=>a.map(Number))
         .map(callback)
-        .reduce((a,b)=>a+b)
+        .reduce(sum)
 }
 
 function fullOverlap([a, b, c, d]) {

@@ -1,3 +1,5 @@
+const sum = require("./sum");
+
 function solve1() {
   return input.split('\n').map(game => {
     let [theirs, mine] = game.split(' ');
@@ -22,7 +24,7 @@ function solve1() {
     }
 
     return score;
-  }).reduce((a,b) => a+b)
+  }).reduce(sum)
 };
 
 function solve2() {
@@ -54,7 +56,7 @@ function solve2() {
     }
     
     return score;
-  }).reduce((a,b) => a+b)
+  }).reduce(sum)
 };
 
 const input = `C Y

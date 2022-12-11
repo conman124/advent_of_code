@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const sum = require('./sum');
 
 function letterToCode(char) {
     let a = "a".charCodeAt(0);
@@ -23,7 +24,7 @@ function part1() {
         }
     }
 
-    return input.split('\n').map(processSingle).reduce((a,b)=>a+b);
+    return input.split('\n').map(processSingle).reduce(sum);
 }
 
 function part2() {
@@ -33,7 +34,7 @@ function part2() {
             a[1].split(''),
             a[2].split('')
         )[0])
-        ).reduce((a,b) => a+b);
+        ).reduce(sum);
 }
 
 const input=`dtddvvhwttHJhwdhJPddhwJGppmGjgpQgTjQplQpTljwpg

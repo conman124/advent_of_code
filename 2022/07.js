@@ -1,3 +1,5 @@
+const sum = require('./sum')
+
 function readFs() {
     const lines = input.split('\n');
 
@@ -49,7 +51,7 @@ function readFs() {
     }
 
     (function calcSizes(dir) {
-        dir.size = dir.childFiles.reduce((a,b)=>a+b, 0);
+        dir.size = dir.childFiles.reduce(sum, 0);
         for(let i = 0; i < dir.childDirs.length; ++i) {
             calcSizes(dir.childDirs[i]);
             dir.size += dir.childDirs[i].size;

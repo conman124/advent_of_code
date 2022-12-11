@@ -1,10 +1,12 @@
+const sum = require('./sum');
+
 function solveBase() {
   return input
     .split("\n\n")
     .map(cals => cals
       .split('\n')
       .map(cal=>parseInt(cal))
-      .reduce((a,b)=>a+b)
+      .reduce(sum)
     )
     .sort((a,b)=>a-b);
 }
@@ -16,7 +18,7 @@ function solve1() {
 function solve2() {
   return solveBase()
     .slice(-3)
-    .reduce((a,b)=>a+b);
+    .reduce(sum);
 }
 
 var input = `15931
