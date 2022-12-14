@@ -1,4 +1,4 @@
-function part1() {
+function getMap() {
     let startx;
     let starty;
     let endx;
@@ -20,6 +20,16 @@ function part1() {
         });
     });
 
+    return {
+        startx,
+        starty,
+        endx,
+        endy,
+        map
+    }
+}
+
+function common(map, startx, starty, isDone, canTraverse) {
     function coordsToString(x, y) {
         return `{${x},${y}}`
     }
@@ -34,8 +44,7 @@ function part1() {
             return false;
         }
 
-        let curval = map[cury][curx];
-        if(map[nexty][nextx] > curval+1) {
+        if(!canTraverse(curx, cury, nextx, nexty)) {
             return false;
         }
 
@@ -43,14 +52,14 @@ function part1() {
             return false;
         }
 
-        return true;;
+        return true;
     }
 
     while(true) {
         while(toVisit.length) {
             let [nextx, nexty] = toVisit.shift();
 
-            if(nextx == endx && nexty == endy) {
+            if(isDone(nextx, nexty)) {
                 return depth;
             }
 
@@ -75,11 +84,34 @@ function part1() {
         toVisit = nextVisit;
         nextVisit = [];
     }
+}
 
+function part1() {
+    let {
+        startx,
+        starty,
+        endx,
+        endy,
+        map
+    } = getMap();
+
+    return common(map, startx, starty, 
+        (x, y) => (x == endx && y == endy),
+        (curx, cury, nextx, nexty) => (map[nexty][nextx] <= map[cury][curx] + 1)
+    );
 }
 
 function part2() {
+    let {
+        endx,
+        endy,
+        map
+    } = getMap();
 
+    return common(map, endx, endy,
+        (x, y) => map[y][x] == 0,
+        (curx, cury, nextx, nexty) => (map[nexty][nextx] >= map[cury][curx] - 1)
+    );
 }
 
 const input = `abaaaaaaaaccccccccccccccccccaaaaaccccaaaaaaccccccccccccccccccccccaaaaaaaaaacccccccccccccccccccccccccccccccaaaaaccccccccccccccccccccccccccccccccccccccccccaaaaaa
