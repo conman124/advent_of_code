@@ -1,4 +1,4 @@
-function part1() {
+function parse(factor) {
     let head = {
     };
 
@@ -8,7 +8,8 @@ function part1() {
     let splitInput = input.split('\n');
     splitInput.map(Number).forEach(num => {
         current.next = {
-            num,
+            num: (num * factor) % (splitInput.length-1),
+            originalNum: num * factor,
             prev: current
         };
         current.originalNext = current.next;
@@ -26,8 +27,13 @@ function part1() {
     current = head.next;
     delete head;
 
+    return [current, zero, splitInput.length];
+}
 
+function mix(head) {
+    let current = head;
     let start = current;
+
     do {
         let insertBefore = current.next;
         current.next.prev = current.prev;
@@ -50,18 +56,21 @@ function part1() {
 
         current = current.originalNext;
     } while (current != start);
+}
 
-    let count1000 = 1000 % splitInput.length;
-    let count2000 = 2000 % splitInput.length;
-    let count3000 = 3000 % splitInput.length;
+// it's a little convoluted but it gets the job done
+function calculateCoords(zero, length) {
+    let count1000 = 1000 % length;
+    let count2000 = 2000 % length;
+    let count3000 = 3000 % length;
 
     let res = 0;
     let count = 0;
-    current = zero;
+    let current = zero;
     let i = 0;
     do {
         if(i == count1000 || i == count2000 || i == count3000) {
-            res += current.num;
+            res += current.originalNum;
             ++count;
         }
 
@@ -70,6 +79,20 @@ function part1() {
     } while(current != zero && count != 3);
 
     return res;
+}
+
+function part1() {
+    let [head, zero, length] = parse(1);
+    mix(head);
+    return calculateCoords(zero, length);
+}
+
+function part2() {
+    let [head, zero, length] = parse(811589153);
+    for(let i = 0; i < 10; ++i) {
+        mix(head);
+    }
+    return calculateCoords(zero, length);
 }
 
 const input2 = `1
@@ -5081,3 +5104,4 @@ const input = `6624
 -248`;
 
 console.log(part1());
+console.log(part2());
