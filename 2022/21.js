@@ -37,6 +37,51 @@ function part1() {
     return resolve("root", parsed);
 }
 
+const print = _.memoize(function(name, parsed) {
+    let obj = parsed[name];
+    if(obj.operand1 && obj.operand2) {
+        let left = print(obj.operand1, parsed);
+        let right = print(obj.operand2, parsed);
+        return obj.print(left, right);
+    }
+    return obj.print();
+})
+
+function part2() {
+    let parsed = {};
+    input.split('\n').forEach(line => {
+        let match = line.match(/(....): ((\d+)|(....) (.) (....))/);
+        let name = match[1];
+        if(name == "root") {
+            parsed[name] = {
+                print: (a,b) => `Eq(${a}, ${b})`,
+                operand1: match[4],
+                operand2: match[6],
+            };
+        } else if (name == "humn") {
+            parsed[name] = {
+                print: () => `humn`
+            };
+        } else if (match[3]) {
+            parsed[name] = {
+                print: () => `${match[3]}`
+            };
+        } else {
+            parsed[name] = {
+                print: (a,b) => `(${a} ${match[5]} ${b})`,
+                operand1: match[4],
+                operand2: match[6]
+            };
+        }
+    });   
+
+    return `To solve part 2, put the following into python3 with sympy installed:
+
+from sympy import *
+humn = symbols("humn")
+simplify(${print("root", parsed)})`
+}
+
 const input2 = `root: pppw + sjmn
 dbpl: 5
 cczh: sllz + lgvd
@@ -2967,3 +3012,4 @@ whhj: cgtw + tfht
 bchl: 19`;
 
 console.log(part1());
+console.log(part2());
