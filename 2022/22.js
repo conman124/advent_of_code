@@ -1,8 +1,8 @@
-function part1() {
-    const OPEN=0;
-    const WALL=1;
-    const WRAP=2;
+const OPEN=0;
+const WALL=1;
+const WRAP=2;
 
+function parse() {
     const [mapStr, instructionsStr] = input.split('\n\n');
     const map = mapStr.split('\n').map(line => {
         return line.split('').map(a => {
@@ -18,6 +18,10 @@ function part1() {
 
     const instructions = instructionsStr.split(/(\d+|L|R)/g).filter(a=>a);
 
+    return [map, instructions];
+}
+
+function run(map, instructions, getWrappedPos) {
     let pos = [map[0].indexOf(OPEN), 0];
     let dir = [1, 0];
 
@@ -50,31 +54,18 @@ function part1() {
         }
     }
 
-    function getWrappedPos([posx, posy], [offx, offy]) {
-        let nextx = posx + offx, nexty = posy + offy;
-        if(nexty < 0 || nexty >= map.length || nextx < 0 || nextx >= map[nexty].length || map[nexty][nextx] == WRAP) {
-            do {
-                nextx -= offx;
-                nexty -= offy;
-            } while (nexty >= 0 && nexty < map.length && nextx >= 0 && nextx < map[nexty].length && map[nexty][nextx] != WRAP);
-            posx = nextx;
-            posy = nexty;
-        }
-        return [posx, posy];
-    }
-
     instructions.forEach(instruction => {
         if(instruction == 'L' || instruction == 'R') {
             dir = changeDir(dir, instruction);
         } else {
             let count = parseInt(instruction);
             for(let i = 0; i < count; ++i) {
-                let [wrappedx, wrappedy] = getWrappedPos(pos, dir);
-                let [offx, offy] = dir;
+                let [[wrappedx, wrappedy], [offx, offy]] = getWrappedPos(pos, dir);
                 if(map[wrappedy + offy][wrappedx + offx] == WALL) {
                     break;
                 } else {
                     pos = [wrappedx + offx, wrappedy + offy];
+                    dir = [offx, offy];
                 }
             }
         }
@@ -85,6 +76,25 @@ function part1() {
     let heading = getHeadingNum(dir);
 
     return 1000 * row + 4 * col + heading;
+}
+
+function part1() {
+    let [map, instructions] = parse();
+
+    function getWrappedPos([posx, posy], [offx, offy]) {
+        let nextx = posx + offx, nexty = posy + offy;
+        if(nexty < 0 || nexty >= map.length || nextx < 0 || nextx >= map[nexty].length || map[nexty][nextx] == WRAP) {
+            do {
+                nextx -= offx;
+                nexty -= offy;
+            } while (nexty >= 0 && nexty < map.length && nextx >= 0 && nextx < map[nexty].length && map[nexty][nextx] != WRAP);
+            posx = nextx;
+            posy = nexty;
+        }
+        return [[posx, posy], [offx, offy]];
+    }
+
+    return run(map, instructions, getWrappedPos);
 }
 
 function part2() {
