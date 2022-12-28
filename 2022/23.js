@@ -1,4 +1,4 @@
-function part1() {
+function both() {
     function coordToKey(x, y) {
         return `${x},${y}`;
     }
@@ -40,7 +40,8 @@ function part1() {
         [[ 1, -1], [ 1,  0], [ 1,  1]]
     ];
 
-    for(let i = 0; i < 10; ++i) {
+    let i = 0;
+    while(true) {
         let proposedMoves = new Map(); // Map from starting position to proposed position
         let proposedCounts = new Map(); // Map from proposed position to count of elves that proposed
 
@@ -61,33 +62,40 @@ function part1() {
             }
         });
 
+        let moved = 0;
         proposedMoves.forEach((newPos, oldPos) => {
             if(proposedCounts.get(newPos) == 1) {
+                ++moved;
                 currentPositions.delete(oldPos);
                 currentPositions.add(newPos);
             }
         });
+
+        ++i;
+        
+        if(moved == 0) {
+            console.log(i);
+            break;
+        }
+
+        if(i == 10) {
+            let minX = Number.POSITIVE_INFINITY;
+            let minY = Number.POSITIVE_INFINITY;
+            let maxX = Number.NEGATIVE_INFINITY;
+            let maxY = Number.NEGATIVE_INFINITY;
+        
+            currentPositions.forEach(pos => {
+                let [x, y] = keyToCoord(pos);
+                minX = Math.min(minX, x);
+                minY = Math.min(minY, y);
+                maxX = Math.max(maxX, x+1);
+                maxY = Math.max(maxY, y+1);
+            });
+        
+            let area = (maxX - minX) * (maxY - minY);
+            console.log(area - elfCount);
+        }
     }
-
-    let minX = Number.POSITIVE_INFINITY;
-    let minY = Number.POSITIVE_INFINITY;
-    let maxX = Number.NEGATIVE_INFINITY;
-    let maxY = Number.NEGATIVE_INFINITY;
-
-    currentPositions.forEach(pos => {
-        let [x, y] = keyToCoord(pos);
-        minX = Math.min(minX, x);
-        minY = Math.min(minY, y);
-        maxX = Math.max(maxX, x+1);
-        maxY = Math.max(maxY, y+1);
-    });
-
-    let area = (maxX - minX) * (maxY - minY);
-    return area - elfCount;
-}
-
-function part2() {
-
 }
 
 const input2 = `....#..
@@ -170,5 +178,4 @@ const input = `####.##.#..#..#...#..#.#..#..#.##.##.####.#..#.#....###.....####.
 ########.#.##.#..##..#...####.#.###.#.#.#.##.#.######.##.#.##....####..#
 ###.#...##.###.##....#..##.##..#######..###.###...#..###.##...#...#..##.`;
 
-console.log(part1());
-console.log(part2());
+both();
