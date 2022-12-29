@@ -1,15 +1,16 @@
 const {MinPriorityQueue} = require("@datastructures-js/priority-queue");
 
-function gcd(a, b) {
-    return !b ? a : gcd(b, a % b);
-}
-
-function lcm(a, b) {
-    return (a * b) / gcd(b, a);
-}
-
-function part1() {
+function parse() {
     let initialMap = input.split('\n').map(line => line.replace(/^#|#$/g, '').split('')).slice(1, -1);
+
+    function gcd(a, b) {
+        return !b ? a : gcd(b, a % b);
+    }
+    
+    function lcm(a, b) {
+        return (a * b) / gcd(b, a);
+    }
+
     let startPos = [0, -1]; // x,y
     let endPos = [initialMap[0].length-1, initialMap.length];
     let cyclePeriod = lcm(initialMap.length, initialMap[0].length);
@@ -17,13 +18,12 @@ function part1() {
     let map = [];
     let startNodes = [];
     let endNodes = [];
-
+        
     function hasBlizzardAtTime(x, y, time) {
         return initialMap[y][(x+time)%initialMap[0].length] == '<'
             || initialMap[y][((x-time)%initialMap[0].length+initialMap[0].length)%initialMap[0].length] == '>'
             || initialMap[(y+time)%initialMap.length][x] == '^'
-            || initialMap[((y-time)%initialMap.length+initialMap.length)%initialMap.length][x] == 'v';
-
+            || initialMap[((y-time)%initialMap.length+initialMap.length)%initialMap.length][x] == 'v';    
     }
 
     // Create nodes
@@ -56,9 +56,18 @@ function part1() {
     // Create edges
     for(let i = 0; i < cyclePeriod; ++i) {
         let next = (i+1) % cyclePeriod;
+
+        // Add map -> end
         if(!hasBlizzardAtTime(endPos[0], endPos[1]-1, i)) {
             map[i][endPos[1]-1][endPos[0]].exits.push(endNodes[next]);
         }
+        // Add end -> map
+        if(!hasBlizzardAtTime(endPos[0], endPos[1]-1, next)) {
+            endNodes[i].exits.push(map[next][endPos[1]-1][endPos[0]]);
+        }
+        // Add end -> end
+        endNodes[i].exits.push(endNodes[next]);
+        // Add map -> map
         for(let y = 0; y < initialMap.length; ++y) {
             for(let x = 0; x < initialMap[0].length; ++x) {
                 if(hasBlizzardAtTime(x, y, i)) {
@@ -82,12 +91,26 @@ function part1() {
                 }
             }
         }
+        // Add map -> start
+        if(!hasBlizzardAtTime(0, 0, i)) {
+            map[i][0][0].exits.push(startNodes[next]);
+        }
+        // Add start -> map
         if(!hasBlizzardAtTime(0, 0, next)) {
             startNodes[i].exits.push(map[next][0][0]);
         }
+        // Add start -> start
         startNodes[i].exits.push(startNodes[next]);
     }
 
+    return {
+        startNodes,
+        startPos,
+        endPos
+    }
+}
+
+function search(startNode, [endx, endy], startStep) {
     // Lazy A* search
     // Normally, you need to update the g and f for a node's neighbors
     // if they are better than the first one you found.  However, the only
@@ -101,13 +124,13 @@ function part1() {
         }
 
         function h(n) {
-            return endPos[0] - n.node.x + endPos[1] - n.node.y;
+            return endx - n.node.x + endy - n.node.y;
         }
 
         return g(node) + h(node);
     });
-    let current = {step: 0, node: startNodes[0]};
-    while(current.node.x != endPos[0] || current.node.y != endPos[1]) {
+    let current = {step: startStep, node: startNode};
+    while(current.node.x != endx || current.node.y != endy) {
         for(let i = 0; i < current.node.exits.length; ++i) {
             if(!seen.has(current.node.exits[i])) {
                 queue.push({
@@ -121,11 +144,30 @@ function part1() {
         current = queue.pop();
     }
 
-    return current.step;
+    return current;
+}
+
+function part1() {
+    let {
+        startNodes,
+        endPos,
+    } = parse();
+
+    return search(startNodes[0], endPos, 0).step;
 }
 
 function part2() {
+    let {
+        startNodes,
+        startPos,
+        endPos
+    } = parse();
 
+    let toEnd = search(startNodes[0], endPos, 0);
+    let toStart = search(toEnd.node, startPos, toEnd.step);
+    let toEnd2 = search(toStart.node, endPos, toStart.step);
+
+    return toEnd2.step;
 }
 
 const input2 = `#.######
@@ -173,3 +215,4 @@ const input = `#.###############################################################
 ####################################################################################################.#`
 
 console.log(part1());
+console.log(part2());
