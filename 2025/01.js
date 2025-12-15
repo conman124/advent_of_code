@@ -26,7 +26,7 @@ function solve2() {
             }
             const newPos = ((newPosUnwrapped%100)+100)%100;
 
-            return tee([newPos, count0 + (newPos == 0 ? 1 : 0) + wrapCount ]);
+            return [newPos, count0 + (newPos == 0 ? 1 : 0) + wrapCount ];
         }, [50, 0])[1];
 
 }
