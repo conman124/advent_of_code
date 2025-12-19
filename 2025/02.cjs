@@ -47,8 +47,8 @@ function solve2() {
         .reduce(sum, 0)
 }
 const input = require("../input/2025/02.cjs");
-const sum = require("../sum.cjs.cjs");
-const tee = require("../tee.cjs.cjs");
+const sum = require("../sum.cjs");
+const tee = require("../tee.cjs");
 
 console.log(solve1());
 console.log(solve2());

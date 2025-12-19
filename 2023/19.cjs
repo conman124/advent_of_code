@@ -1,6 +1,6 @@
 const _ = require("underscore");
 const input = require("../input/2023/19.cjs");
-const sum = require("../sum.cjs.cjs");
+const sum = require("../sum.cjs");
 
 function part1() {
     const [workflowsStr, partsStr] = input.split('\n\n');

@@ -32,7 +32,7 @@ function solve2() {
 }
 
 const input = require("../input/2025/03.cjs");
-const sum = require("../sum.cjs.cjs");
+const sum = require("../sum.cjs");
 
 console.log(solve1());
 console.log(solve2());
